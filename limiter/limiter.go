@@ -18,9 +18,7 @@ type Limiter struct {
 // New creates a new rate limiter
 func New(opts ...Option) *Limiter {
 	o := option{}
-	for _, opt := range opts {
-		opt(&o)
-	}
+	o.apply(opts...)
 	return &Limiter{
 		opts: o,
 		data: make(map[string]*ratelimit.RateLimiter),
@@ -37,9 +35,7 @@ func (l *Limiter) Len() int {
 // SetOptions sets the options for the rate limiter
 func (l *Limiter) SetOptions(opts ...Option) {
 	l.mu.Lock()
-	for _, opt := range opts {
-		opt(&l.opts)
-	}
+	l.opts.apply(opts...)
 	l.mu.Unlock()
 }
 

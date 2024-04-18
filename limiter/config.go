@@ -29,6 +29,13 @@ type option struct {
 	Configs []Config
 }
 
+// apply applies the options
+func (o *option) apply(opts ...Option) {
+	for _, opt := range opts {
+		opt(o)
+	}
+}
+
 type Option func(*option)
 
 // WithKeyFunc sets the key function for the rate limiter
