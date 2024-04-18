@@ -9,19 +9,19 @@ import (
 
 type Token struct {
 	rdb          redis.Cmdable
-	cfg          *config
+	opts         *option
 	tokenListKey string
 	tokenKey     string
 }
 
 func New(rdb redis.Cmdable, opts ...Option) *Token {
-	cfg := new(config)
-	cfg.apply(opts...)
-	cfg.Default()
+	o := new(option)
+	o.apply(opts...)
+	o.Default()
 
 	return &Token{
 		rdb:          rdb,
-		cfg:          cfg,
+		opts:         o,
 		tokenListKey: "users:token:list:%d",
 		tokenKey:     "users:token",
 	}
@@ -41,8 +41,8 @@ func (tk *Token) key(token string) string {
 func (tk *Token) Set(ctx context.Context, val *Value) (err error) {
 	listKey := tk.listKey(val.UserId)
 	key := tk.key(val.Token)
-	if tk.cfg.expire > 0 {
-		val.ExpiredAt = val.CreatedAt.Add(tk.cfg.expire)
+	if tk.opts.expire > 0 {
+		val.ExpiredAt = val.CreatedAt.Add(tk.opts.expire)
 	}
 
 	_, err = tk.rdb.TxPipelined(ctx, func(pipe redis.Pipeliner) (err error) {

@@ -2,29 +2,29 @@ package token
 
 import "time"
 
-type config struct {
+type option struct {
 	expire time.Duration
 }
 
-// apply
-func (c *config) apply(opts ...Option) {
+// apply apply options
+func (o *option) apply(opts ...Option) {
 	for _, opt := range opts {
-		opt(c)
+		opt(o)
 	}
 }
 
 // Default default configuration
-func (c *config) Default() {
-	if c.expire == 0 {
-		c.expire = time.Hour * 24
+func (o *option) Default() {
+	if o.expire == 0 {
+		o.expire = time.Hour * 24
 	}
 }
 
-type Option func(*config)
+type Option func(*option)
 
 // WithExpire set expiration time
 func WithExpire(expire time.Duration) Option {
-	return func(c *config) {
+	return func(c *option) {
 		c.expire = expire
 	}
 }

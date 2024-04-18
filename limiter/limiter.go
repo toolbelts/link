@@ -12,12 +12,12 @@ import (
 type Limiter struct {
 	mu   sync.RWMutex
 	data map[string]*ratelimit.RateLimiter
-	opts option
+	opts *option
 }
 
 // New creates a new rate limiter
 func New(opts ...Option) *Limiter {
-	o := option{}
+	o := new(option)
 	o.apply(opts...)
 	return &Limiter{
 		opts: o,
